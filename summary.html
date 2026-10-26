@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nyaya Mitra Summary & Q&A</title>
+    <link rel="icon" type="image/png" href="/logo.png" />
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+    <link rel="stylesheet" href="/style.css" />
+    <style>
+      .layout-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+      @media (min-width: 1024px) {
+        .layout-grid { grid-template-columns: 7fr 5fr; }
+      }
+
+      .top-action-bar {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(12px);
+        padding: 16px 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+        margin-top: 80px; /* offset for fixed header */
+      }
+      @media (min-width: 768px) {
+        .top-action-bar { flex-direction: row; justify-content: space-between; align-items: center; }
+      }
+
+      .back-btn {
+        display: flex; align-items: center; gap: 8px; color: var(--primary);
+        font-weight: 700; font-family: var(--font-body); font-size: 14px;
+        background: rgba(141, 75, 0, 0.1); padding: 8px 16px; border-radius: 12px;
+        text-decoration: none; transition: background 0.3s ease;
+      }
+      .back-btn:hover { background: rgba(141, 75, 0, 0.15); }
+
+      .card {
+        background: rgba(255,255,255,0.9);
+        border: 1px solid rgba(0,0,0,0.05);
+        border-radius: 20px;
+        padding: 24px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+      }
+
+      .badge-urgent {
+        background: rgba(186, 26, 26, 0.1);
+        color: #ba1a1a;
+        padding: 8px 16px;
+        border-radius: 999px;
+        font-weight: 700;
+        font-size: 13px;
+        display: inline-flex; align-items: center; gap: 6px;
+        animation: pulse-urgent 2s infinite;
+      }
+      @keyframes pulse-urgent {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.7; }
+      }
+
+      .section-heading { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+      .section-heading span { font-size: 24px; }
+      
+      .checklist-item {
+        display: flex; align-items: flex-start; gap: 12px;
+        padding: 12px; background: rgba(0,0,0,0.02); border-radius: 12px;
+        margin-bottom: 8px; transition: background 0.2s ease; cursor: pointer;
+      }
+      .checklist-item:hover { background: rgba(0,0,0,0.04); }
+      .checklist-item input { margin-top: 4px; accent-color: var(--primary); width: 18px; height: 18px; }
+
+      .info-grid { display: grid; grid-template-columns: 1fr; gap: 16px; margin-top: 24px; }
+      @media (min-width: 640px) { .info-grid { grid-template-columns: 1fr 1fr; } }
+      .info-box { background: rgba(0,0,0,0.02); padding: 16px; border-radius: 16px; }
+
+      /* Audio Player */
+      .audio-player {
+        background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,220,195,0.4));
+        padding: 24px; border-radius: 20px; border: 1px solid rgba(141, 75, 0, 0.1);
+        margin-top: 24px; display: flex; flex-direction: column; gap: 16px;
+      }
+
+      /* Chatbot */
+      .chat-header {
+        display: flex; justify-content: space-between; align-items: center;
+        padding-bottom: 16px; border-bottom: 1px solid rgba(0,0,0,0.05);
+      }
+      .chat-bubbles {
+        height: 350px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; padding: 16px 0;
+      }
+      
+      .bubble { max-width: 85%; padding: 12px 16px; font-size: 14px; line-height: 1.5; box-sizing: border-box; }
+      .bubble-bot { width: 100%; max-width: 100%; background: rgba(0,0,0,0.04); border-radius: 16px 16px 16px 4px; align-self: stretch; }
+      .bubble-user { background: var(--primary); color: white; border-radius: 16px 16px 4px 16px; align-self: flex-end; }
+      
+      .chat-input-area {
+        position: relative; display: flex; align-items: center;
+        border-top: 1px solid rgba(0,0,0,0.05); padding-top: 16px;
+      }
+      .chat-input {
+        width: 100%; padding: 16px 20px; padding-right: 100px;
+        background: rgba(0,0,0,0.03); border: none; border-radius: 999px;
+        font-family: var(--font-body); font-size: 14px; outline: none;
+      }
+      .chat-input:focus { box-shadow: 0 0 0 2px var(--primary); }
+      .chat-actions { position: absolute; right: 8px; display: flex; gap: 4px; }
+      .chat-btn {
+        width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+        border: none; cursor: pointer; transition: all 0.2s ease;
+      }
+      .btn-mic { background: transparent; color: var(--primary); }
+      .btn-mic:hover { background: rgba(141, 75, 0, 0.1); }
+      .btn-send { background: var(--primary); color: white; }
+      
+      .suggested-chips { display: flex; flex-wrap: wrap; gap: 8px; padding: 12px 0; }
+      .chip {
+        background: rgba(0,0,0,0.04); border: none; padding: 6px 12px; border-radius: 8px;
+        font-size: 12px; cursor: pointer; color: var(--text-main); transition: background 0.2s ease;
+      }
+      .chip:hover { background: rgba(0,0,0,0.08); }
+
+      .chat-markdown p { margin: 0 0 8px; line-height: 1.55; }
+      .chat-markdown p:last-child { margin-bottom: 0; }
+      .chat-markdown ol, .chat-markdown ul { margin: 4px 0 10px; padding-left: 22px; }
+      .chat-markdown li { margin: 4px 0; line-height: 1.5; }
+      .chat-markdown strong { font-weight: 700; }
+      .chat-markdown code { background: rgba(0,0,0,.06); padding: 1px 4px; border-radius: 4px; }
+    </style>
+  </head>
+  <body>
+    <!-- Abstract Background Shapes -->
+    <div class="bg-shape shape1"></div>
+    <div class="bg-shape shape2"></div>
+    <div class="bg-shape shape3"></div>
+
+    <!-- Header -->
+    <header class="glass-header">
+      <div class="header-container">
+        <div class="logo-area">
+          <img alt="Nyaya Mitra" class="logo-img" src="/logo.png"/>
+          <div class="logo-text">
+            <h1>Nyaya Mitra</h1>
+            <span class="subtitle">Gramin Nyaya Mitra</span>
+          </div>
+        </div>
+        
+        <nav class="desktop-nav">
+          <a href="/index.html" class="nav-item active">Summarizer</a>
+          <a href="#" class="nav-item">Rights Guide</a>
+        </nav>
+
+        <div class="header-actions">
+          <div class="lang-nav-selector glass-pill">
+            <button class="lang-nav-btn">EN</button>
+            <button class="lang-nav-btn active">हिं</button>
+            <button class="lang-nav-btn">म</button>
+          </div>
+          <div class="helpline glass-pill">
+            <span class="material-symbols-outlined">call</span>
+            <span>NALSA 15100</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Sub-Header Action Bar -->
+    <section class="top-action-bar">
+      <div style="display: flex; gap: 16px; align-items: center;">
+        <a href="/index.html" class="back-btn">
+          <span class="material-symbols-outlined">arrow_back</span> वापस / Back
+        </a>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span class="material-symbols-outlined primary-text">description</span>
+          <span id="summary-filename" style="font-weight: 600; font-size: 14px;">document.pdf</span>
+        </div>
+      </div>
+      <div style="display: flex; gap: 8px;">
+        <button id="download-btn" class="secondary-btn">
+          <span class="material-symbols-outlined">download</span> Download PDF
+        </button>
+        <button class="secondary-btn" onclick="window.print()">
+          <span class="material-symbols-outlined">print</span> Print Copy
+        </button>
+      </div>
+    </section>
+
+    <main style="margin-top: 32px; margin-bottom: 60px;">
+      <div class="layout-grid">
+        
+        <!-- LEFT COLUMN: Summary & Actionables -->
+        <div style="display: flex; flex-direction: column; gap: 24px;">
+          <div class="card" style="border-left: 6px solid var(--primary);">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px;">
+              <div>
+                <span id="doc-type-label" style="font-size: 12px; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 1px;">Legal Document</span>
+                <h1 id="doc-title" style="font-size: 24px; margin-top: 4px;">Document Summary</h1>
+                <p style="color: var(--text-muted); font-size: 14px;">AI-generated plain language summary</p>
+              </div>
+              <div id="urgency-badge" class="badge-urgent">
+                <span class="material-symbols-outlined" style="font-size: 18px;">warning</span>
+                Analyzing urgency…
+              </div>
+            </div>
+
+            <!-- Q1 -->
+            <div style="background: rgba(0,0,0,0.02); padding: 20px; border-radius: 16px; margin-bottom: 16px;">
+              <div class="section-heading primary-text">
+                <span class="material-symbols-outlined">help_center</span>
+                <h2 style="font-size: 18px;">1. यह दस्तावेज़ क्या है? / What is this?</h2>
+              </div>
+              <div id="what-it-is"><p style="font-size:15px;color:var(--text-muted);">Loading summary…</p></div>
+            </div>
+
+            <!-- Q2 -->
+            <div style="margin-bottom: 24px;">
+              <div class="section-heading" style="color: var(--secondary);">
+                <span class="material-symbols-outlined">gavel</span>
+                <h2 style="font-size: 18px;">2. आपके लिए इसका क्या अर्थ है? / What does it mean?</h2>
+              </div>
+              <ul id="what-it-means" style="list-style: none; padding-left: 0; display: flex; flex-direction: column; gap: 12px;">
+                <li style="font-size:14px;color:var(--text-muted);">Loading…</li>
+              </ul>
+            </div>
+
+            <!-- Checklist -->
+            <div>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <div class="section-heading" style="color: var(--tertiary); margin: 0;">
+                  <span class="material-symbols-outlined">task_alt</span>
+                  <h2 style="font-size: 18px;">3. Action Checklist / क्या कदम उठाएं</h2>
+                </div>
+                <span id="checklist-counter" class="glass-pill" style="font-size: 12px; font-weight: 600;">0/3 Completed</span>
+              </div>
+              
+              <div style="display: flex; flex-direction: column; gap: 8px;" id="action-checklist">
+                <label class="checklist-item">
+                  <input type="checkbox" onchange="updateCounter()" />
+                  <div>
+                    <h3 style="font-size: 14px; margin-bottom: 2px;">Loading action steps…</h3>
+                  </div>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Important Dates / Amounts -->
+          <div class="info-grid">
+            <div id="dates-box" class="info-box" style="background: rgba(141, 75, 0, 0.05);">
+              <div class="section-heading primary-text">
+                <span class="material-symbols-outlined">calendar_clock</span>
+                <span style="font-size: 16px; font-weight: 700;">Important Dates</span>
+              </div>
+              <p style="font-size:14px;color:var(--text-muted);">Extracting dates…</p>
+            </div>
+            <div id="amounts-box" class="info-box" style="background: rgba(0, 107, 44, 0.05);">
+              <div class="section-heading" style="color: var(--tertiary);">
+                <span class="material-symbols-outlined">currency_rupee</span>
+                <span style="font-size: 16px; font-weight: 700;">Monetary Amounts</span>
+              </div>
+              <p style="font-size:14px;color:var(--text-muted);">Extracting amounts…</p>
+            </div>
+          </div>
+
+          <!-- Audio Player -->
+          <div class="audio-player">
+            <audio id="summary-audio" preload="auto" style="display:none;"></audio>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div style="display: flex; gap: 12px; align-items: center;">
+                <span class="material-symbols-outlined primary-text" style="font-size: 32px;">record_voice_over</span>
+                <div>
+                  <h3 style="font-size: 18px;">सुनिए / Listen to Summary</h3>
+                  <p style="font-size: 12px; color: var(--text-muted);">AI-generated audio narration</p>
+                </div>
+              </div>
+              <span class="glass-pill" style="font-size: 11px; font-weight: 700; color: var(--primary);">AI Voice</span>
+            </div>
+            <p id="no-audio-msg" style="display:none;font-size:13px;color:var(--text-muted);">Audio not available for this document.</p>
+            <div style="display: flex; gap: 16px; align-items: center;">
+              <button id="play-btn" class="chat-btn btn-send" style="width: 48px; height: 48px;" onclick="toggleAudio()">
+                <span class="material-symbols-outlined" style="font-size: 28px;" id="play-icon">play_arrow</span>
+              </button>
+              <div style="flex: 1;">
+                <div style="display: flex; justify-content: space-between; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 8px;">
+                  <span id="time-current">00:00</span>
+                  <div style="display: flex; gap: 4px; align-items: flex-end; height: 16px;" id="wave-container"></div>
+                  <span id="time-duration">--:--</span>
+                </div>
+                <div style="width: 100%; height: 8px; background: rgba(0,0,0,0.1); border-radius: 999px;">
+                  <div id="audio-progress" style="width: 0%; height: 100%; background: var(--primary); border-radius: 999px; transition: width 0.1s linear;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT COLUMN: Chatbot & Assurances -->
+        <div style="display: flex; flex-direction: column; gap: 24px;">
+          <div class="card" style="display: flex; flex-direction: column; height: 100%;">
+            <div class="chat-header">
+              <div style="display: flex; gap: 12px; align-items: center;">
+                <div style="width: 40px; height: 40px; border-radius: 12px; background: var(--secondary); color: white; display: flex; align-items: center; justify-content: center;">
+                  <span class="material-symbols-outlined">smart_toy</span>
+                </div>
+                <div>
+                  <h2 style="font-size: 18px;">सवाल पूछें / Ask Q&A</h2>
+                  <p style="font-size: 12px; color: var(--text-muted);">दस्तावेज़ पर आधारित उत्तर (Grounded AI)</p>
+                </div>
+              </div>
+              <span class="glass-pill" style="font-size: 11px; font-weight: 700; color: var(--tertiary);">
+                <span style="width: 8px; height: 8px; background: var(--tertiary); border-radius: 50%; display: inline-block;"></span> Active
+              </span>
+            </div>
+            
+            <div class="suggested-chips">
+              <button class="chip" onclick="askPreset('क्या मुझे वकील ले जाना अनिवार्य है?')">⚖️ क्या वकील अनिवार्य है?</button>
+              <button class="chip" onclick="askPreset('अगर मैं उस दिन न जा सकूँ तो?')">📅 अगर मैं न जा सकूँ?</button>
+              <button class="chip" onclick="askPreset('कौन से दस्तावेज़ ले जाने हैं?')">📑 कौन से दस्तावेज़?</button>
+            </div>
+
+            <div class="chat-bubbles" id="chat-box">
+              <div class="bubble bubble-bot">
+                नमस्ते। मैं इस नोटिस का सहायक हूँ। आप नोटिस से जुड़े कोई भी सवाल हिंदी या अंग्रेजी में पूछ सकते हैं।
+              </div>
+            </div>
+
+            <form class="chat-input-area" onsubmit="handleChatSubmit(event)">
+              <input type="text" id="chat-input" class="chat-input" placeholder="दस्तावेज़ के बारे में पूछें..." />
+              <div class="chat-actions">
+                <button type="button" class="chat-btn btn-mic" onclick="simulateMic()"><span class="material-symbols-outlined" id="mic-icon">mic</span></button>
+                <button type="submit" class="chat-btn btn-send"><span class="material-symbols-outlined">send</span></button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Disclaimer Box -->
+          <div class="card" style="background: rgba(141, 75, 0, 0.05); padding: 16px;">
+            <div style="display: flex; gap: 12px; align-items: flex-start;">
+              <span class="material-symbols-outlined primary-text">verified_user</span>
+              <div>
+                <h3 style="font-size: 14px; margin-bottom: 4px;">कानूनी सुरक्षा / Disclaimer</h3>
+                <p style="font-size: 12px; color: var(--text-muted);">AI summary is for informational assistance, not certified legal counsel. For formal representation, contact TLSC or call NALSA <strong>15100</strong>.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- Loading overlay for while job is still processing -->
+    <div id="loading-overlay" style="position:fixed;inset:0;z-index:8888;background:rgba(255,255,255,0.85);backdrop-filter:blur(8px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;">
+      <span class="material-symbols-outlined animate-spin" style="font-size:48px;color:var(--primary);">progress_activity</span>
+      <h2>Finalizing your summary…</h2>
+      <p id="overlay-status" style="color:var(--text-muted);">Please wait…</p>
+    </div>
+    <script src="/summary.js"></script>
+  </body>
+</html>

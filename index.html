@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nyaya Mitra Legal Document Analyzer</title>
+    <link rel="icon" type="image/png" href="/logo.png" />
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <!-- Aesthetic Light Colorful Background Shapes -->
+    <div class="bg-shape shape1"></div>
+    <div class="bg-shape shape2"></div>
+    <div class="bg-shape shape3"></div>
+
+    <!-- Header -->
+    <header class="glass-header">
+      <div class="header-container">
+        <div class="logo-area">
+          <img alt="Nyaya Mitra" class="logo-img" src="/logo.png"/>
+          <div class="logo-text">
+            <h1>Nyaya Mitra</h1>
+            <span class="subtitle">Gramin Nyaya Mitra</span>
+          </div>
+        </div>
+        
+        <nav class="desktop-nav">
+          <a href="#" class="nav-item active">Summarizer</a>
+          <a href="#" class="nav-item">Rights Guide</a>
+          <a href="#" class="nav-item">Paralegal Aid</a>
+        </nav>
+
+        <div class="header-actions">
+          <!-- Language Selector in Navbar -->
+          <div class="lang-nav-selector glass-pill">
+            <button class="lang-nav-btn" data-lang="en">EN</button>
+            <button class="lang-nav-btn active" data-lang="hi">हिं</button>
+            <button class="lang-nav-btn" data-lang="mr">म</button>
+          </div>
+
+          <div class="helpline glass-pill" style="cursor:pointer;" onclick="window.location.href='tel:15100'">
+            <span class="material-symbols-outlined">call</span>
+            <span>NALSA 15100</span>
+          </div>
+          
+          <button class="guide-btn primary-btn">
+            <span class="material-symbols-outlined">record_voice_over</span>
+            <span>Guide</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <!-- Hero Section -->
+      <section class="hero-section">
+        <div class="hero-badge glass-pill">
+          <span class="material-symbols-outlined icon-filled primary-text">balance</span>
+          <span class="font-bold">जनहित कानूनी सेवा · Free Legal Assistance</span>
+        </div>
+        
+        <h1 class="hero-title">
+          Understand Any Legal Notice in 
+          <span class="highlight-text">Simple Language</span>
+        </h1>
+        
+        <p class="hero-subtitle">
+          अदालत का नोटिस, बैंक पत्र या ज़मीन के कागज़ात — अपनी भाषा में समझें और सुनें
+        </p>
+        
+        <p class="hero-desc">
+          Designed for rural households, farmers, and self-help workers across India. Upload a photo or PDF to get an instant audio-narrated breakdown without costly intermediaries.
+        </p>
+
+        <div class="feature-tags">
+          <span class="tag glass-tag">
+            <span class="material-symbols-outlined tag-icon-1">record_voice_over</span>
+            Audio Narration
+          </span>
+          <span class="tag glass-tag">
+            <span class="material-symbols-outlined tag-icon-2">gavel</span>
+            Court Notices
+          </span>
+          <span class="tag glass-tag">
+            <span class="material-symbols-outlined tag-icon-3">account_balance</span>
+            Bank & Recovery
+          </span>
+          <span class="tag glass-tag">
+            <span class="material-symbols-outlined tag-icon-4">agriculture</span>
+            Land Records
+          </span>
+        </div>
+      </section>
+
+      <!-- Main Interaction Area -->
+      <section class="interaction-grid single-col">
+        <!-- Upload Area -->
+        <div class="step-card upload-section glass-panel">
+          <div class="step-header flex-between">
+            <div>
+              <span class="step-label">Step 1 · चरण १</span>
+              <h2>Upload Document</h2>
+            </div>
+            <button id="reset-btn" class="text-btn hidden">Remove / दूसरा चुनें</button>
+          </div>
+
+          <!-- Hidden real file input — placed in HTML for reliable .click() on all browsers -->
+          <input type="file" id="file-input" accept=".pdf,.jpg,.jpeg,.png,.txt" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;" />
+
+          <div id="drop-zone" class="drop-zone interactive-glass">
+            <div id="empty-state" class="empty-state">
+              <div class="upload-icon-wrapper">
+                <span class="material-symbols-outlined huge-icon">document_scanner</span>
+                <div class="add-icon-badge"><span class="material-symbols-outlined">add_photo_alternate</span></div>
+              </div>
+              
+              <h3>Drag &amp; Drop or <span class="highlight-text-small">Browse Files</span></h3>
+              <p class="hindi-text">यहाँ फ़ाइल खींचें या फ़ोटो अपलोड करें</p>
+              
+              <div class="file-reqs">
+                <span>PDF, JPG, PNG, TXT</span>
+                <span class="dot">·</span>
+                <span>Max 16MB</span>
+              </div>
+
+              <!-- Label acts as direct trigger for the file input — no JS needed, works everywhere -->
+              <label for="file-input" class="browse-label primary-btn" id="browse-label-btn" style="cursor:pointer;display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border-radius:14px;font-weight:700;font-size:14px;margin-bottom:8px;">
+                <span class="material-symbols-outlined">upload_file</span>
+                Browse &amp; Select File
+              </label>
+              
+              <button id="load-sample-btn" class="sample-btn secondary-btn">
+                <span class="material-symbols-outlined">file_open</span>
+                Test with Sample Notice
+              </button>
+            </div>
+
+            <div id="selected-state" class="selected-state hidden">
+              <div class="success-icon-wrapper">
+                <span class="material-symbols-outlined">task</span>
+              </div>
+              <div class="success-badge">
+                <span class="material-symbols-outlined">verified</span>
+                दस्तावेज़ सफलतापूर्वक जुड़ा गया · Ready
+              </div>
+              <h3 class="filename" id="selected-filename">document.pdf</h3>
+              <p class="file-meta" id="selected-meta">0 MB · Ready for analysis</p>
+              
+              <div class="scan-quality glass-pill">
+                <div class="quality-info">
+                  <span class="material-symbols-outlined primary-text">description</span>
+                  <div>
+                    <strong>Stamp Recognition Confidence</strong>
+                    <span class="primary-text">98.4% — Revenue Court Seal Legible</span>
+                  </div>
+                </div>
+                <span class="material-symbols-outlined success-color">check_circle</span>
+              </div>
+            </div>
+          </div>
+
+          <button id="analyze-btn" class="analyze-btn glass-btn-disabled" disabled>
+            <span class="material-symbols-outlined">auto_read_pause</span>
+            <span>Analyze Document</span>
+            <span class="material-symbols-outlined arrow">arrow_forward</span>
+          </button>
+
+          <div class="trust-indicators">
+            <div class="trust-item">
+              <span class="material-symbols-outlined icon-safe">verified_user</span>
+              <strong>100% Free</strong>
+            </div>
+            <div class="trust-item">
+              <span class="material-symbols-outlined icon-fast">lock_open_right</span>
+              <strong>No Login</strong>
+            </div>
+            <div class="trust-item">
+              <span class="material-symbols-outlined icon-secure">auto_delete</span>
+              <strong>Auto Purge</strong>
+            </div>
+            <div class="trust-item">
+              <span class="material-symbols-outlined icon-gov">policy</span>
+              <strong>Legal Aid Support</strong>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bottom Steps -->
+      <section class="bottom-steps">
+        <div class="info-card glass-panel interactive-card">
+          <div class="info-icon orange-bg">
+            <span class="material-symbols-outlined">photo_camera</span>
+          </div>
+          <div class="info-text">
+            <h3>1. Take Photo</h3>
+            <p>Click clearly in daylight. Make sure official seals and dates are in frame.</p>
+          </div>
+        </div>
+        <div class="info-card glass-panel interactive-card">
+          <div class="info-icon purple-bg">
+            <span class="material-symbols-outlined">hearing</span>
+          </div>
+          <div class="info-text">
+            <h3>2. Listen to Summary</h3>
+            <p>Hear the legal matter explained simply. Identifies if action is required soon.</p>
+          </div>
+        </div>
+        <div class="info-card glass-panel interactive-card">
+          <div class="info-icon green-bg">
+            <span class="material-symbols-outlined">contact_phone</span>
+          </div>
+          <div class="info-text">
+            <h3>3. Free Paralegal Connect</h3>
+            <p>Get connected to a Taluk or District Legal Services Authority volunteer right away.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="glass-footer">
+      <div class="footer-content">
+        <div class="footer-left">
+          <span class="material-symbols-outlined icon-safe">verified_user</span>
+          <p>Supported by Gramin Legal Aid Network · 100% Confidential · No Data Retained</p>
+        </div>
+        <div class="footer-right">
+          <span>NALSA Helpline: 15100</span>
+          <span>·</span>
+          <span>Tele-Law Ready</span>
+        </div>
+      </div>
+    </footer>
+
+    <script src="/main.js"></script>
+  </body>
+</html>
