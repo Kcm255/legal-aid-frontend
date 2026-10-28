@@ -126,7 +126,7 @@ function initSummaryPage() {
     resultData = result;
     if (loadingOverlay) loadingOverlay.style.display = "none";
     populateSummary(result);
-    setupAudio(result.audio_filename);
+    setupAudio(result.audio_filename, result.audio_script);
     setupInitialChat();
   };
 
@@ -328,13 +328,27 @@ function initSummaryPage() {
   }
 
   let waveInterval = null;
+  let browserSpeechText = "";
+  let browserSpeechActive = false;
 
-  function setupAudio(audioFilename) {
+  function setupAudio(audioFilename, audioScript) {
     if (!audioFilename || !audioEl) {
       if (noAudioMsg) noAudioMsg.style.display = "block";
       if (playBtn) playBtn.disabled = true;
       return;
     }
+
+    // Windows SAPI may use an English voice and skip Devanagari, speaking only
+    // numbers. Use the browser's language voice for Hindi/Marathi narration.
+    if (audioScript && language !== "en" && "speechSynthesis" in window) {
+      browserSpeechText = audioScript;
+      audioEl.removeAttribute("src");
+      audioEl.load();
+      if (timeCurrent) timeCurrent.textContent = "00:00";
+      if (timeDuration) timeDuration.textContent = "--:--";
+      return;
+    }
+
     audioEl.src = getAudioUrl(audioFilename);
     audioEl.load();
 
@@ -362,6 +376,38 @@ function initSummaryPage() {
 
   // toggle audio — called inline from HTML or via play btn
   window.toggleAudio = () => {
+    if (browserSpeechText) {
+      if (browserSpeechActive) {
+        window.speechSynthesis.cancel();
+        browserSpeechActive = false;
+        if (playIcon) playIcon.textContent = "play_arrow";
+        stopWave();
+        return;
+      }
+
+      const utterance = new SpeechSynthesisUtterance(browserSpeechText);
+      utterance.lang = language === "hi" ? "hi-IN" : "mr-IN";
+      const voices = window.speechSynthesis.getVoices();
+      const voice = voices.find(v => v.lang.toLowerCase().startsWith(utterance.lang.slice(0, 2)));
+      if (voice) utterance.voice = voice;
+      utterance.onstart = () => {
+        browserSpeechActive = true;
+        if (playIcon) playIcon.textContent = "pause";
+        waveInterval = setInterval(() => {
+          document.querySelectorAll(".wave-bar").forEach(b =>
+            b.style.height = `${Math.random() * 14 + 4}px`
+          );
+        }, 250);
+      };
+      utterance.onend = utterance.onerror = () => {
+        browserSpeechActive = false;
+        if (playIcon) playIcon.textContent = "play_arrow";
+        stopWave();
+      };
+      window.speechSynthesis.speak(utterance);
+      return;
+    }
+
     if (!audioEl || !audioEl.src) {
       showToast("Audio not available for this document.");
       return;
